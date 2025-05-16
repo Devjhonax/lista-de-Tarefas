@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+        * {
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: rgb(2, 28, 107);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: aliceblue;
+            gap: 20px;
+        }
+
+        section {
+            background-color: aliceblue;
+            width: 80%;
+            height: 70%;
+            padding: 10px;
+            border-radius: 15px;
+            color: black;
+            text-align: center;
+            box-shadow: 10px 10px 20px;
+        }
+
+        input {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            width: 85%;
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgb(0, 0, 0);
+        }
+
+        .add-quest {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tarefa {
+            margin-top: 15px;
+            border: 1px solid rgb(87, 86, 86);
+            border-radius: 8px;
+            height: 70%;
+            flex-wrap: wrap;
+            overflow-y: scroll;
+            padding: 10px 5px;
+        }
+
+        button {
+            padding: 5px 8px;
+            border-radius: 8px;
+            border: 1px solid black;
+            color: rgb(0, 0, 0);
+            background-color: rgb(106, 255, 0);
+        }
+
+        #limpar {
+            background-color: rgb(255, 36, 3);
+            color: aliceblue;
+        }
+
+        #liDetarefa {
+            text-align: left;
+        }
+
+        .checkbox {
+            width: 15px;
+        }
+
+        .riscado {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Lista de Afazeres</h1>
+    </header>
+
+    <section>
+        <div class="add-quest">
+            <p>
+                Por favor digite a tarefa:
+                <input id="barra" type="text" name="" />
+            </p>
+            <p>
+                <button onclick="add()">Adcionar Tarefa</button>
+                <button id="limpar" onclick="limpar()">Limpar Tudo</button>
+            </p>
+        </div>
+
+        <div class="tarefa">
+            <ol id="liDetarefa">
+                <li>
+                    <input class="checkbox" type="checkbox" name="1" id="">
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <script>
+
+        window.onload = function () {
+            const tarefasSalvas = localStorage.getItem("tarefas");
+            if (tarefasSalvas) {
+                document.getElementById("liDetarefa").innerHTML = tarefasSalvas;
+                ativarEventosCheckbox();
+            }
+        };
+
+        function ativarEventosCheckbox() {
+            const checkboxes = document.querySelectorAll(".checkbox");
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    const span = checkbox.nextElementSibling;
+                    if (span) {
+                        span.classList.toggle("riscado");
+                        salvar();
+                    }
+                });
+            });
+        }
+
+        function add() {
+            const ol = document.getElementById("liDetarefa");
+            const barraDePesquisa = document.getElementById("barra");
+            const input = barraDePesquisa.value.trim()
+
+            if (input === "") return;
+
+            const li = document.createElement("li");
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.classList.add("checkbox");
+
+            const span = document.createElement("span");
+            span.textContent = " " + input;
+
+            checkbox.addEventListener("change", function () {
+                span.classList.toggle("riscado");
+                salvar();
+            });
+
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            ol.appendChild(li);
+
+
+            barraDePesquisa.value = ""
+            salvar();
+        }
+
+
+        function limpar() {
+            const ol = document.getElementById("liDetarefa");
+            ol.innerHTML = "";
+            localStorage.removeItem("tarefas");
+        }
+
+
+        function salvar() {
+            const ol = document.getElementById("liDetarefa");
+            localStorage.setItem("tarefas", ol.innerHTML);
+        }
+
+    </script>
+</body>
+
+</html>
